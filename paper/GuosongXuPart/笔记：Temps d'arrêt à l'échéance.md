@@ -1,3 +1,5 @@
+
+
 在传统的衍生品合约中，一般存在固定到期日(Maturity): $T$。但是对于一些特定的新兴的衍生品合约，比如Uniswap V3，可以不存在一个固定到期日，也就是说合约的到期日完全依赖权利方行权或提前约定的停时。对于这种衍生品合约的定价问题，计算停时的Laplace 变换是一个常用的手段，本文意在给出带有drift的布朗运动双边吸收壁停时的Laplace变换。
 ## 0. Definition
 
@@ -26,8 +28,7 @@ f_{ab}(x|t) &= \frac{\partial}{\partial t}F_{ab}(x|t)
 $$
 其中$f_{ab}(x|t)$ 是停时的概率密度函数。
 对于单边吸收壁停时情况：
-$$
-\tau_c(x)=\left\{
+$$ \tau_c(x)=\left\{
 \begin{aligned}
 \tau_{c,\infty}(x) & & \text{if}  x>c \\
 \tau_{-\infty,c}(x) & & \text{if}  x\leq c
@@ -52,6 +53,7 @@ $$
 $$
 F_{ab}(x|t) = F^{+}_{ab}(x|t)+F^{-}_{ab}(x|t)
 $$
+
 对应地，
 $$
 \begin{aligned}
@@ -66,12 +68,12 @@ $$
 \hat f^{+}_{ab}(x|\lambda) &= \int_0^{\infty}e^{-\lambda t}f^{+}_{ab}(x|t)dt 
 \end{aligned}
 $$
-
-
 # 1. Optimal Stopping Theorem
 
- 对于一个带有正漂移项$\mu >0$的布朗运动，$X(t) = \mu t+\sigma B_t$
-$$
+ 对于一个带有正漂移项$\mu >0$的布朗运动，
+ $$
+ X(t) = \mu t+\sigma B_t
+ $$
  假设单边吸收壁：
  $$ \tau(x)=\left\{
 \begin{aligned}
@@ -80,9 +82,9 @@ $$
 \end{aligned}
 \right.
 $$
-
+ 
  通过Wald's Identities 可以得知对于$\alpha >0$：
-$$
+ $$
 M_t:=\exp \left(\alpha X_t-\alpha \mu t-\frac{1}{2} \alpha^2 t\right)
 $$
 是一个鞅。
