@@ -1,24 +1,24 @@
-import numpy as np
 
+from math import log, sqrt, sinh, cosh,exp,tanh
 
 def uni_v3_pricing_payoff_version_analytic_solution(S, H, L):
-    lambda_para=1/(2-np.sqrt(L)-(1/np.sqrt(H)))
+    lambda_para=1/(2-sqrt(L)-(1/sqrt(H)))
     if S <= L:
-        result = lambda_para*S*((1/np.sqrt(L))-(1/np.sqrt(H)))
+        result = lambda_para*S*((1/sqrt(L))-(1/sqrt(H)))
     elif L < S <= H:
-        result = lambda_para*(2*np.sqrt(S)-np.sqrt(L)-(S/np.sqrt(H)))
+        result = lambda_para*(2*sqrt(S)-sqrt(L)-(S/sqrt(H)))
     else:
-        result = lambda_para*(np.sqrt(H)-np.sqrt(L))
+        result = lambda_para*(sqrt(H)-sqrt(L))
     return result
 
 
 def uni_v3_pricing_euroexcu_gbm_version_analytic_general_solution(S, H, L, r, mu, C, sigma):
-    para_x = np.log(S)/sigma
-    para_a = np.log(L)/sigma
-    para_b = np.log(H)/sigma
-    lambda_para = 1/(2-np.sqrt(L)-(1/np.sqrt(H)))
-    payoff_high = lambda_para*(np.sqrt(H)-np.sqrt(L))
-    payoff_low = lambda_para*L*((1/np.sqrt(L))-(1/np.sqrt(H)))
+    para_x = log(S)/sigma
+    para_a = log(L)/sigma
+    para_b = log(H)/sigma
+    lambda_para = 1/(2-sqrt(L)-(1/sqrt(H)))
+    payoff_high = lambda_para*(sqrt(H)-sqrt(L))
+    payoff_low = lambda_para*L*((1/sqrt(L))-(1/sqrt(H)))
     result = uni_v3_pricing_gbm_version_analytic_general_solution(payoff_low,
                                                                   payoff_high,
                                                                   para_a,
@@ -31,12 +31,14 @@ def uni_v3_pricing_euroexcu_gbm_version_analytic_general_solution(S, H, L, r, mu
 
 
 def uni_v3_pricing_amerexcu_gbm_version_analytic_general_solution(S, H, L, L1, L2, r, mu, C, sigma):
-    para_x = np.log(S)/sigma
-    para_a = np.log(L1)/sigma
-    para_b = np.log(L2)/sigma
-    lambda_para = 1/(2-np.sqrt(L)-(1/np.sqrt(H)))
-    payoff_high = lambda_para*(2*np.sqrt(L2)-np.sqrt(L)-(L2/np.sqrt(H)))
-    payoff_low = lambda_para*(2*np.sqrt(L1)-np.sqrt(L)-(L1/np.sqrt(H)))
+    if L <= 0 or sigma <= 0:
+        raise ValueError("L and sigma must be positive and non-zero.")
+    para_x = log(S)/sigma
+    para_a = log(L1)/sigma
+    para_b = log(L2)/sigma
+    lambda_para = 1/(2-sqrt(L)-(1/sqrt(H)))
+    payoff_high = lambda_para*(2*sqrt(L2)-sqrt(L)-(L2/sqrt(H)))
+    payoff_low = lambda_para*(2*sqrt(L1)-sqrt(L)-(L1/sqrt(H)))
     result = uni_v3_pricing_gbm_version_analytic_general_solution(payoff_low,
                                                                   payoff_high,
                                                                   para_a,
@@ -49,12 +51,12 @@ def uni_v3_pricing_amerexcu_gbm_version_analytic_general_solution(S, H, L, L1, L
 
 
 def uni_v3_pricing_gbm_version_analytic_general_solution(payoff_low, payoff_high, a, x, b, r, mu, C):
-    part1 = payoff_high*np.exp(mu*(b-x))*np.sinh((x-a)*np.sqrt(2*r+mu**2))/np.sinh((b-a)*np.sqrt(2*r+mu**2))
-    part2 = payoff_low*np.exp(mu*(a-x))*np.sinh((b-x)*np.sqrt(2*r+mu**2))/np.sinh((b-a)*np.sqrt(2*r+mu**2))
-    part3_1_1 = np.exp(mu*(a-x))*(b-x)*np.cosh((b-x)*np.sqrt(2*r+mu**2))+np.exp(mu*(b-x))*(x-a)*np.cosh((x-a)*np.sqrt(2*r+mu**2))
-    part3_1_2 = np.sqrt(2*r+mu**2)*np.sinh((b-a)*np.sqrt(2*r+mu**2))
-    part3_2_1 = np.exp(mu*(a-x))*np.sinh((b-x)*np.sqrt(2*r+mu**2))+np.exp(mu*(b-x))*np.sinh((x-a)*np.sqrt(2*r+mu**2))
-    part3_2_2 = np.sqrt(2*r+mu**2)*np.tanh((b-a)*np.sqrt(2*r+mu**2))*np.sinh((b-a)*np.sqrt(2*r+mu**2))
+    part1 = payoff_high*exp(mu*(b-x))*sinh((x-a)*sqrt(2*r+mu**2))/sinh((b-a)*sqrt(2*r+mu**2))
+    part2 = payoff_low*exp(mu*(a-x))*sinh((b-x)*sqrt(2*r+mu**2))/sinh((b-a)*sqrt(2*r+mu**2))
+    part3_1_1 = exp(mu*(a-x))*(b-x)*cosh((b-x)*sqrt(2*r+mu**2))+exp(mu*(b-x))*(x-a)*cosh((x-a)*sqrt(2*r+mu**2))
+    part3_1_2 = sqrt(2*r+mu**2)*sinh((b-a)*sqrt(2*r+mu**2))
+    part3_2_1 = exp(mu*(a-x))*sinh((b-x)*sqrt(2*r+mu**2))+exp(mu*(b-x))*sinh((x-a)*sqrt(2*r+mu**2))
+    part3_2_2 = sqrt(2*r+mu**2)*tanh((b-a)*sqrt(2*r+mu**2))*sinh((b-a)*sqrt(2*r+mu**2))
     part3_1 = part3_1_1/part3_1_2
     part3_2 = (b-a)*part3_2_1/part3_2_2
     part3 = C*(-(part3_1-part3_2))
@@ -68,9 +70,9 @@ if __name__ == '__main__':
     # C = 0.055
     # r = 0.04
     # sigma = 0.12
-    # L_list = np.arange(0.90, 0.99, 0.01)
-    # H_list = np.arange(1.01, 1.10, 0.01)
-    # L_list, H_list = np.meshgrid(L_list, H_list)
+    # L_list = arange(0.90, 0.99, 0.01)
+    # H_list = arange(1.01, 1.10, 0.01)
+    # L_list, H_list = meshgrid(L_list, H_list)
     # L1_list = 0.90
     # L2_list = 1.10
     #
