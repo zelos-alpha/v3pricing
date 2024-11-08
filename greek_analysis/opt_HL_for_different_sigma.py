@@ -7,8 +7,8 @@ from code.model.optimization import EuroOptimize
 def plot_different_range_for_different_sigma():
     r = 0.05
     C = 0.2
-    sigma_list = np.linspace(0.2,0.7,400)
-    result = [EuroOptimize(r,C,sigma,bounds=(0.05,3000)) for sigma in sigma_list]
+    sigma_list = np.linspace(0.2,1,100)
+    result = [EuroOptimize(r,C,sigma,bounds=(0.05,300)) for sigma in sigma_list]
     h_list = [i[0][0] for i in result]
     l_list = [i[0][1] for i in result]
     v_list = [i[1] for i in result]

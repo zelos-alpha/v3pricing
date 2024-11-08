@@ -27,6 +27,7 @@ def uni_v3_pricing_euroexcu_gbm_version_analytic_general_solution(S, H, L, r, mu
                                                                   r,
                                                                   mu,
                                                                   C*lambda_para)
+    #print(result, "S:", S, "H:", H, "L:", L, "r:", r, "mu:", mu, "C:", C, "sigma:", sigma)
     return result
 
 

@@ -15,7 +15,7 @@ def EuroOptimize(r,C,sigma,bounds=(0.02,80)):
     lower,upper = bounds
     bounds = [(1.01, upper), ( lower,0.99)]
     ret = shgo(lambda x: -uni_v3_pricing_euroexcu_gbm_version_analytic_general_solution(1,x[0], x[1], r,0, C, sigma),
-                       bounds=bounds,n=400)
+                       bounds=bounds,n=1000)
     return ret.x, -ret.fun
 
 #def uni_v3_pricing_amerexcu_gbm_version_analytic_general_solution(S, H, L, L1, L2, r, mu, C, sigma
@@ -30,14 +30,29 @@ def AmericanOptimize(r,C,sigma,bounds=(0.02,80)):
                        bounds=bounds,constraints=cons,n=400)
     return ret.x, -ret.fun
 
+def AmericanOptimize_fix(r,C,sigma,H,L,bounds=(0.02,80)):
+    lower,upper = bounds
+    bounds = [( lower,0.99),(1.01, upper)]
+    #constraints
+    cons = ({'type': 'ineq', 'fun': lambda x: x[0]-L},
+            {'type': 'ineq', 'fun': lambda x: H-x[1]},)
+
+    ret = shgo(lambda x: -uni_v3_pricing_amerexcu_gbm_version_analytic_general_solution(1,H, L,x[0],x[1], r, 0,C, sigma),
+                       bounds=bounds,constraints=cons,n=400)
+    return ret.x, -ret.fun
+
+
+
+
+
 
 if __name__ == '__main__':
     # C = 0.15
     # r = 0.05
-    # sigma = 0.20
+    # sigma = 0.70
     C = 0.15
-    r = 0.05
-    sigma = 0.8
+    r = 0.25
+    sigma = 0.70
 
     res, V = AmericanOptimize(r, C, sigma)
     H, L, L1, L2 = res
