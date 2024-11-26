@@ -18,6 +18,12 @@ def delta_cal(S, H, L, option_type='euro', ds=0.0001, **kwargs):
     pv_right = pricing_func(S+ds, H, L, **kwargs)
     return (pv_right - pv_left) / (2*ds)
 
+def delta_cal_unit(S, H, L, option_type='euro', ds=0.0001, **kwargs):
+    pricing_func = func_dict[option_type]
+    pv_left = pricing_func(S-ds, H, L, **kwargs)
+    pv_right = pricing_func(S+ds, H, L, **kwargs)
+    return (pv_right - pv_left) / (2*ds)/((pv_right+pv_left)/2)
+
 
 
 
