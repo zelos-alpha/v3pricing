@@ -33,7 +33,7 @@ def uni_v3_pricing_euroexcu_gbm_version_analytic_general_solution(S, H, L, r, mu
     return result
 
 
-def uni_v3_pricing_amerexcu_gbm_version_analytic_general_solution(S, H, L, L1, L2, r, mu, C, sigma):
+def uni_v3_pricing_amerexcu_gbm_version_analytic_general_solution(S, H, L, L1, L2, r, mu_input, C, sigma):
     if L <= 0 or sigma <= 0:
         raise ValueError("L and sigma must be positive and non-zero.")
     para_x = log(S)/sigma
@@ -42,6 +42,8 @@ def uni_v3_pricing_amerexcu_gbm_version_analytic_general_solution(S, H, L, L1, L
     lambda_para = 1/(2-sqrt(L)-(1/sqrt(H)))
     payoff_high = lambda_para*(2*sqrt(L2)-sqrt(L)-(L2/sqrt(H)))
     payoff_low = lambda_para*(2*sqrt(L1)-sqrt(L)-(L1/sqrt(H)))
+    C_per_liquidity=C*lambda_para*lambda_para*(2*sqrt(S)-sqrt(L)-S/sqrt(H))
+    mu = (mu_input / sigma) - (sigma * 0.5)
     result = uni_v3_pricing_gbm_version_analytic_general_solution(payoff_low,
                                                                   payoff_high,
                                                                   para_a,
@@ -49,7 +51,7 @@ def uni_v3_pricing_amerexcu_gbm_version_analytic_general_solution(S, H, L, L1, L
                                                                   para_b,
                                                                   r,
                                                                   mu,
-                                                                  C*lambda_para)
+                                                                  C_per_liquidity)
     return result
 
 
