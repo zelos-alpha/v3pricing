@@ -12,13 +12,15 @@ def uni_v3_pricing_payoff_version_analytic_solution(S, H, L):
     return result
 
 
-def uni_v3_pricing_euroexcu_gbm_version_analytic_general_solution(S, H, L, r, mu, C, sigma):
+def uni_v3_pricing_euroexcu_gbm_version_analytic_general_solution(S, H, L, r, mu_input, C, sigma):
     para_x = log(S)/sigma
     para_a = log(L)/sigma
     para_b = log(H)/sigma
     lambda_para = 1/(2-sqrt(L)-(1/sqrt(H)))
     payoff_high = lambda_para*(sqrt(H)-sqrt(L))
     payoff_low = lambda_para*L*((1/sqrt(L))-(1/sqrt(H)))
+    C_per_liquidity=C*lambda_para*lambda_para*(2*sqrt(S)-sqrt(L)-S/sqrt(H))
+    mu = (mu_input / sigma) - (sigma * 0.5)
     result = uni_v3_pricing_gbm_version_analytic_general_solution(payoff_low,
                                                                   payoff_high,
                                                                   para_a,
@@ -26,7 +28,7 @@ def uni_v3_pricing_euroexcu_gbm_version_analytic_general_solution(S, H, L, r, mu
                                                                   para_b,
                                                                   r,
                                                                   mu,
-                                                                  C*lambda_para)
+                                                                  C_per_liquidity)
     #print(result, "S:", S, "H:", H, "L:", L, "r:", r, "mu:", mu, "C:", C, "sigma:", sigma)
     return result
 
