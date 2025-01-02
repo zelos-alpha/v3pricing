@@ -69,6 +69,14 @@ def uni_v3_pricing_gbm_version_analytic_general_solution(payoff_low, payoff_high
     return result
 
 
+def uni_v3_pricing_gbm_version_fee_upper_bound_formula(a, x, b, r, mu, C):
+    part3_1_1 = exp(mu*(a-x))*sinh((b-x)*sqrt(2*r+mu**2))
+    part3_1_2 = exp(mu*(b-x))*sinh((x-a)*sqrt(2*r+mu**2))
+    part3_2 = sinh((b-a)*sqrt(2*r+mu**2))
+    fee_result = C/r*(1-((part3_1_1+part3_1_2)/part3_2))
+    return fee_result
+
+
 if __name__ == '__main__':
     # H = 1.2617
     # L = 0.852365
