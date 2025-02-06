@@ -4,6 +4,10 @@
 # 级数展开为手动推导后得到的解析公式
 # 现在将比较两种算法之间的数值差异
 # 如果数值极为接近，则改用级数展开算法进行计算
+# 2025年2月6日更新
+# 此测试脚本对于irr整体解析式中的上下限积分部分进行了quad积分与级数展开解析式的数值比较
+# 测试成功，级数展开解析式可以代替quad积分
+# 对于1/tau的期望的级数展开解析式的测试检验，在其他文件进行
 import numpy as np
 from scipy.integrate import quad
 from math import log, sqrt, sinh, cosh, exp, pi

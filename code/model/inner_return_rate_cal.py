@@ -15,8 +15,7 @@ def irr_cal(S, L, H, sigma, C, r, mu):
     lower_bound_lp_part=-lambda_para*L*(1/sqrt(L)-1/sqrt(H))*exp(mu*(para_a-para_x))*lower_bound_inf_series_value(para_x, para_a, para_b, r, mu)
     upper_bound_lp_part=-lambda_para*(sqrt(H)-sqrt(L)*exp(mu*(para_b-para_x))*upper_bound_inf_series_value(para_x, para_a, para_b, r, mu))
     fee_part=C*cosh((para_b+para_a)*sqrt(2*r+mu**2)/2)/cosh((para_b-para_x)*sqrt(2*r+mu**2)/2)
-    # 1/tau目前的解析式待定，还未成功推导他和那个两个cosh的除法积分的关系
-    last_part=(pi**2)/(8*((para_b-para_a)**2))
+    last_part=last_part_inf_series_value(para_a, para_b, mu)
     return lower_bound_lp_part+upper_bound_lp_part+fee_part-last_part
 
 
@@ -35,6 +34,16 @@ def upper_bound_inf_series_value(x, a, b, r, mu, count_num=1000):
     terms1=np.exp((x-b-2*n*(b-a))*sqrt(2*r+mu**2))*((x-b-2*n*(b-a))*sqrt(2*r+mu**2)-1)/((x-b-2*n*(b-a))**2)
     terms2=np.exp(-(b-2*a+x+2*n*(b-a))*sqrt(2*r+mu**2))*((2*b-a-x+2*n*(b-a))*sqrt(2*r+mu**2)+1)/((b-2*a+x+2*n*(b-a))**2)
     terms=-(terms1+terms2)
+    series_sum=np.sum(terms)
+    return series_sum
+
+
+# 对1/tau的期望的解析式的展开形式
+def last_part_inf_series_value(a, b, mu, count_num=1000):
+    n=np.arange(0, count_num)
+    terms1=((-1)**(n+1))*(np.exp((a-n*(b-a))*mu)*((a-n*(b-a))*mu-1))/((a-n*(b-a))**2)
+    terms2=((-1)**(n+1))*(np.exp(-(b+n*(b-a))*mu)*((b+n*(b-a))*mu+1))/((b+n*(b-a))**2)
+    terms=terms1-terms2
     series_sum=np.sum(terms)
     return series_sum
 
