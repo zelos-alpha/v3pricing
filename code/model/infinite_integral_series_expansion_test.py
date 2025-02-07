@@ -53,7 +53,7 @@ def lower_bound_inf_series_value(x, a, b, r, mu, count_num=1000):
 def upper_bound_inf_series_value(x, a, b, r, mu, count_num=1000):
     n=np.arange(0, count_num)
     terms1=np.exp((x-b-2*n*(b-a))*sqrt(2*r+mu**2))*((x-b-2*n*(b-a))*sqrt(2*r+mu**2)-1)/((x-b-2*n*(b-a))**2)
-    terms2=np.exp(-(b-2*a+x+2*n*(b-a))*sqrt(2*r+mu**2))*((2*b-a-x+2*n*(b-a))*sqrt(2*r+mu**2)+1)/((b-2*a+x+2*n*(b-a))**2)
+    terms2=np.exp(-(b-2*a+x+2*n*(b-a))*sqrt(2*r+mu**2))*((b-2*a+x+2*n*(b-a))*sqrt(2*r+mu**2)+1)/((b-2*a+x+2*n*(b-a))**2)
     terms=-(terms1+terms2)
     series_sum=np.sum(terms)
     return series_sum
@@ -130,7 +130,8 @@ if __name__ == '__main__':
 
     # 定义需要比较的算法对
     algorithm_pairs = [
-        (upper_bound_inf_int_value, upper_bound_inf_series_value),  # 比较算法 1 和算法 2
+        (upper_bound_inf_int_value, upper_bound_inf_series_value),
+        (lower_bound_inf_int_value, lower_bound_inf_series_value)# 比较算法 1 和算法 2
     ]
 
     for pair in algorithm_pairs:

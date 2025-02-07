@@ -12,8 +12,8 @@ def irr_cal(S, L, H, sigma, C, r, mu):
     para_x=log(S)/sigma
     # print(L, H, para_a, para_b)
     lambda_para = 1 / (2 - sqrt(L) - (1 / sqrt(H)))
-    lower_bound_lp_part=-lambda_para*L*(1/sqrt(L)-1/sqrt(H))*exp(mu*(para_a-para_x))*lower_bound_inf_series_value(para_x, para_a, para_b, r, mu)
-    upper_bound_lp_part=-lambda_para*(sqrt(H)-sqrt(L)*exp(mu*(para_b-para_x))*upper_bound_inf_series_value(para_x, para_a, para_b, r, mu))
+    lower_bound_lp_part=lambda_para*L*(1/sqrt(L)-1/sqrt(H))*exp(mu*(para_a-para_x))*lower_bound_inf_series_value(para_x, para_a, para_b, r, mu)
+    upper_bound_lp_part=lambda_para*(sqrt(H)-sqrt(L)*exp(mu*(para_b-para_x))*upper_bound_inf_series_value(para_x, para_a, para_b, r, mu))
     fee_part=C*cosh((para_b+para_a)*sqrt(2*r+mu**2)/2)/cosh((para_b-para_x)*sqrt(2*r+mu**2)/2)
     last_part=last_part_inf_series_value(para_a, para_b, mu)
     return lower_bound_lp_part+upper_bound_lp_part+fee_part-last_part
@@ -32,7 +32,7 @@ def lower_bound_inf_series_value(x, a, b, r, mu, count_num=1000):
 def upper_bound_inf_series_value(x, a, b, r, mu, count_num=1000):
     n=np.arange(0, count_num)
     terms1=np.exp((x-b-2*n*(b-a))*sqrt(2*r+mu**2))*((x-b-2*n*(b-a))*sqrt(2*r+mu**2)-1)/((x-b-2*n*(b-a))**2)
-    terms2=np.exp(-(b-2*a+x+2*n*(b-a))*sqrt(2*r+mu**2))*((2*b-a-x+2*n*(b-a))*sqrt(2*r+mu**2)+1)/((b-2*a+x+2*n*(b-a))**2)
+    terms2=np.exp(-(b-2*a+x+2*n*(b-a))*sqrt(2*r+mu**2))*((b-2*a+x+2*n*(b-a))*sqrt(2*r+mu**2)+1)/((b-2*a+x+2*n*(b-a))**2)
     terms=-(terms1+terms2)
     series_sum=np.sum(terms)
     return series_sum
@@ -93,4 +93,6 @@ if __name__ == '__main__':
     mu = 0
     sigma = 0.7
     result = irr_cal(S, L, H, sigma, C, r, mu)
+    pv_result = uni_v3_pricing_euroexcu_gbm_version_analytic_general_solution(S, H, L, r, mu, C, sigma)
     print(result)
+    print(pv_result)
