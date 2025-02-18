@@ -5,6 +5,10 @@ from code.model.UniV3StoppingTimePricingGen import uni_v3_pricing_euroexcu_gbm_v
 # irr的cal计算成功，指没出bug，但是数值是负值，带之后review
 
 
+def irr_cal_euro_form(S, L, H, sigma, C, r, mu):
+    return result
+
+
 # 用无穷级数展开代替quad，实验结果
 def irr_cal(S, L, H, sigma, C, r, mu):
     para_a=log(L)/sigma
@@ -13,9 +17,25 @@ def irr_cal(S, L, H, sigma, C, r, mu):
     # print(L, H, para_a, para_b)
     lambda_para = 1 / (2 - sqrt(L) - (1 / sqrt(H)))
     lower_bound_lp_part=lambda_para*L*(1/sqrt(L)-1/sqrt(H))*exp(mu*(para_a-para_x))*lower_bound_inf_series_value(para_x, para_a, para_b, r, mu)
-    upper_bound_lp_part=lambda_para*(sqrt(H)-sqrt(L)*exp(mu*(para_b-para_x))*upper_bound_inf_series_value(para_x, para_a, para_b, r, mu))
-    fee_part=C*cosh((para_b+para_a)*sqrt(2*r+mu**2)/2)/cosh((para_b-para_x)*sqrt(2*r+mu**2)/2)
+    upper_bound_lp_part=lambda_para*(sqrt(H)-sqrt(L))*exp(mu*(para_b-para_x))*upper_bound_inf_series_value(para_x, para_a, para_b, r, mu)
+    fee_part=C*cosh((para_b+para_a)*sqrt(2*r+mu**2)/2)/cosh((para_b-para_a)*sqrt(2*r+mu**2)/2)
     last_part=last_part_inf_series_value(para_a, para_b, mu)
+    print(lower_bound_lp_part, upper_bound_lp_part, fee_part, last_part)
+    return lower_bound_lp_part+upper_bound_lp_part+fee_part-last_part
+
+
+# 这是一个临时实验函数，验证一下fee_part新的形式的有效性
+def irr_cal2(S, L, H, sigma, C, r, mu):
+    para_a=log(L)/sigma
+    para_b=log(H)/sigma
+    para_x=log(S)/sigma
+    # print(L, H, para_a, para_b)
+    lambda_para = 1 / (2 - sqrt(L) - (1 / sqrt(H)))
+    lower_bound_lp_part=lambda_para*L*(1/sqrt(L)-1/sqrt(H))*exp(mu*(para_a-para_x))*lower_bound_inf_series_value(para_x, para_a, para_b, r, mu)
+    upper_bound_lp_part=lambda_para*(sqrt(H)-sqrt(L))*exp(mu*(para_b-para_x))*upper_bound_inf_series_value(para_x, para_a, para_b, r, mu)
+    fee_part=C*(exp(mu*(para_a-para_x))*sinh((para_b-para_x)*sqrt(2*r+mu**2))+exp(mu*(para_b-para_x))*sinh((para_x-para_a)*sqrt(2*r+mu**2)))/(sinh((para_b-para_a)*sqrt(2*r+mu**2)))
+    last_part=exp(mu*(para_a-para_x))*lower_bound_inf_series_value(para_x, para_a, para_b, r, mu)+exp(mu*(para_b-para_x))*upper_bound_inf_series_value(para_x, para_a, para_b, r, mu)
+    print(lower_bound_lp_part, upper_bound_lp_part, fee_part, last_part)
     return lower_bound_lp_part+upper_bound_lp_part+fee_part-last_part
 
 
@@ -88,6 +108,18 @@ if __name__ == '__main__':
     S = 1
     H = 2
     L = 0.6
+    C = 0.2
+    r = 0.05
+    mu = 0
+    sigma = 0.7
+    result = irr_cal(S, L, H, sigma, C, r, mu)
+    pv_result = uni_v3_pricing_euroexcu_gbm_version_analytic_general_solution(S, H, L, r, mu, C, sigma)
+    print(result)
+    print(pv_result)
+
+    S = 1
+    H = 4
+    L = 0.1
     C = 0.2
     r = 0.05
     mu = 0
